@@ -1,7 +1,9 @@
 ﻿namespace DataServiceLayer.Context
 {
+    using GenericRepository.Transaction;
     using GenericRepository.UnitOfWork;
     using Microsoft.EntityFrameworkCore;
+    using System.Data;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -16,6 +18,11 @@
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             return 0;
+        }
+
+        public ITransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Snapshot)
+        {
+            return new Transaction(base.Database.BeginTransaction(isolationLevel));
         }
     }
 }

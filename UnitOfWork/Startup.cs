@@ -8,6 +8,7 @@ namespace UnitOfWork
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using UnitOfWork.Filters;
     using UnitOfWork.IoC;
 
     public class Startup
@@ -33,10 +34,11 @@ namespace UnitOfWork
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
+
             ContainerSetup.Setup(services, Configuration);
             LogSecurityModule.Setup(services, Configuration);
-
-            services.AddMvc();
+            services.AddScoped<UnitOfWorkFilterAttribute>();
 
             //var connection = @"Server=(localdb)\mssqllocaldb;Database=LogSecurity;Trusted_Connection=True;ConnectRetryCount=0";
             //services.AddDbContext<SecurityModelContext>(options => options.UseSqlServer(connection));

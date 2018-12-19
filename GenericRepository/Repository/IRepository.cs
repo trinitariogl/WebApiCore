@@ -15,7 +15,7 @@ namespace GenericRepository.Repository
     {
         IUnitOfWork UnitOfWork { get; }
 
-        ITransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Snapshot);
+        //ITransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Snapshot);
 
         IEnumerable<T> GetAll();
 

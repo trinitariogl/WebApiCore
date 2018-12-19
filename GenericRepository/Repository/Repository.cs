@@ -29,10 +29,10 @@ namespace GenericRepository.Repository
             _context = context;
         }
 
-        public ITransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Snapshot)
+        /*public ITransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Snapshot)
         {
             return new Transaction(_context.Database.BeginTransaction(isolationLevel));
-        }
+        }*/
 
         protected DbSet<T> Set
         {

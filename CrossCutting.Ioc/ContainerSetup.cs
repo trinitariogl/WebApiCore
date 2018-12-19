@@ -4,6 +4,9 @@ namespace CrossCutting.Ioc
 {
     using CrossCutting.Utils.MappingService;
     using CrossCutting.Utils.MappingService.Contracts;
+    using CrossCutting.Utils.TransactionService;
+    using CrossCutting.Utils.TransactionService.Contracts;
+    using GenericRepository.UnitOfWork;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -11,26 +14,26 @@ namespace CrossCutting.Ioc
     {
         public static void Setup(IServiceCollection services, IConfigurationRoot configuration)
         {
-            //AddUow(services, configuration);
+            AddUow(services, configuration);
             //AddQueries(services);
             ConfigureAutoMapper(services);
             //ConfigureAuth(services);
         }
 
-        /*private static void AddUow(IServiceCollection services, IConfigurationRoot configuration)
+        private static void AddUow(IServiceCollection services, IConfigurationRoot configuration)
         {
-            var connectionString = configuration["Data:main"];
+            /*var connectionString = configuration["Data:main"];
 
             services.AddEntityFrameworkSqlServer();
 
             services.AddDbContext<MainDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString));*/
 
-            services.AddScoped<IUnitOfWork>(ctx => new EFUnitOfWork(ctx.GetRequiredService<MainDbContext>()));
+            /*services.AddScoped<IUnitOfWork>(ctx => new EFUnitOfWork(ctx.GetRequiredService<MainDbContext>()));*/
 
-            services.AddScoped<IActionTransactionHelper, ActionTransactionHelper>();
-            services.AddScoped<UnitOfWorkFilterAttribute>();
-        }*/
+            services.AddScoped<ITransactionHelper, TransactionHelper>();
+            
+        }
 
         private static void ConfigureAutoMapper(IServiceCollection services)
         {

@@ -1,10 +1,12 @@
 ﻿
 namespace UnitOfWork.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using ApplicationServiceInterfaces.Models;
     using ApplicationServiceInterfaces.Services;
+    using CrossCutting.Utils.CryptoService;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[controller]")]
@@ -22,6 +24,20 @@ namespace UnitOfWork.Controllers
         public async Task<IEnumerable<string>> Get()
         {
             UserAccountDto user = await this._userAccountApplicationService.FindUserById("1ea57e74-6984-4d98-86b3-c516c464b356");
+
+            UserAccountDto userAccountDto = new UserAccountDto();
+
+            userAccountDto.Username = "TNT4";
+            userAccountDto.Id = Guid.NewGuid().ToString();
+            userAccountDto.Email = "trinogl@hotmail.com";
+            userAccountDto.PrefferedLanguage = "es";
+            var salt = Crypto.CreateSalt(8);
+            userAccountDto.Salt = salt;
+            userAccountDto.PasswordHash = Crypto.GetSHA256Hash(Guid.NewGuid().ToString(), salt);
+            userAccountDto.Active = false;
+            userAccountDto.VerificationToken = Guid.NewGuid();
+
+            UserAccountDto userAccountNew = await _userAccountApplicationService.CreateUser(userAccountDto);
 
             return new string[] { "value1", "value2" };
         }

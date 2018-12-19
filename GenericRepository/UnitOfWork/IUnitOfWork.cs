@@ -1,7 +1,9 @@
 ﻿
 namespace GenericRepository.UnitOfWork
 {
+    using GenericRepository.Transaction;
     using System;
+    using System.Data;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -9,6 +11,7 @@ namespace GenericRepository.UnitOfWork
     {
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
         Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default(CancellationToken));
+        ITransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Snapshot);
 
         /*ITransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Snapshot);
         void Commit();
