@@ -9,7 +9,6 @@ namespace UnitOfWork.Controllers
     using CrossCutting.Utils.CryptoService;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
-    using UnitOfWork.Filters;
 
     //[ServiceFilter(typeof(UnitOfWorkFilterAttribute))]
     [Route("api/[controller]")]

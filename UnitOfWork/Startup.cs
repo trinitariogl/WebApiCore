@@ -39,6 +39,7 @@ namespace UnitOfWork
             services.AddMvc(
                 config => {
                     config.Filters.Add<UnitOfWorkFilterAttribute>();
+                    config.Filters.Add<ExceptionFilter>();
                 }
             );
 
