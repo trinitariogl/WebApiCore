@@ -8,15 +8,20 @@ namespace UnitOfWork.Controllers
     using ApplicationServiceInterfaces.Services;
     using CrossCutting.Utils.CryptoService;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using UnitOfWork.Filters;
 
+    //[ServiceFilter(typeof(UnitOfWorkFilterAttribute))]
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
         private IUserAccountApplicationService _userAccountApplicationService;
+        private readonly ILoggerFactory _logger;
 
-        public ValuesController(IUserAccountApplicationService userAccountApplicationService)
+        public ValuesController(IUserAccountApplicationService userAccountApplicationService, ILoggerFactory logger)
         {
             this._userAccountApplicationService = userAccountApplicationService;
+            _logger = logger;
         }
 
         // GET api/values
@@ -27,7 +32,10 @@ namespace UnitOfWork.Controllers
 
             UserAccountDto userAccountDto = new UserAccountDto();
 
-            userAccountDto.Username = "TNT4";
+            var logger = _logger.CreateLogger("LoggerCategory");
+            logger.LogInformation("Calling the ping action");
+
+            userAccountDto.Username = "TNT44";
             userAccountDto.Id = Guid.NewGuid().ToString();
             userAccountDto.Email = "trinogl@hotmail.com";
             userAccountDto.PrefferedLanguage = "es";

@@ -20,9 +20,9 @@
             return 0;
         }
 
-        public ITransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.Snapshot)
+        public ITransaction BeginTransaction(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
-            return new Transaction(base.Database.BeginTransaction(isolationLevel));
+            return new Transaction(base.Database.BeginTransaction());
         }
     }
 }

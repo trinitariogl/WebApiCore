@@ -6,19 +6,22 @@ namespace CrossCutting.Utils.TransactionService
     using GenericRepository.Transaction;
     using GenericRepository.UnitOfWork;
     using Microsoft.AspNetCore.Mvc.Filters;
+    using Microsoft.Extensions.Logging;
     using System;
 
     public class TransactionHelper : ITransactionHelper
     {
         private IUnitOfWork _uow;
         private ITransaction _tx;
+        private ILogger logger;
 
-        //private readonly ILogger _log;
+        private readonly ILoggerFactory _log;
 
-        public TransactionHelper(IUnitOfWork uow) //, ILogger log)
+        public TransactionHelper(IUnitOfWork uow, ILoggerFactory log)
         {
             _uow = uow;
-            //_log = log;
+            _log = log;
+            logger = _log.CreateLogger("LoggerCategory");
         }
 
         private bool TransactionHandled { get; set; }
@@ -26,6 +29,7 @@ namespace CrossCutting.Utils.TransactionService
 
         public void BeginTransaction()
         {
+            logger.LogInformation("Entra en begin transaction");
             _tx = _uow.BeginTransaction();
         }
         public void EndTransaction(ActionExecutedContext filterContext)
@@ -33,13 +37,16 @@ namespace CrossCutting.Utils.TransactionService
             if (_tx == null) throw new NotSupportedException();
             if (filterContext.Exception == null)
             {
-                _uow.SaveChangesAsync();
+                logger.LogInformation("Entra en begin End Transaction");
+                //_uow.SaveChangesAsync();
+                //_uow.SaveEntitiesAsync();
                 _tx.Commit();
             }
             else
             {
                 try
                 {
+                    logger.LogInformation("Entra en begin RollBack");
                     _tx.Rollback();
                 }
                 catch (Exception ex)

@@ -12,6 +12,7 @@ namespace UnitOfWork.IoC
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.EntityFrameworkCore.Proxies;
+    using GenericRepository.UnitOfWork;
 
     public static class LogSecurityModule
     {
@@ -26,6 +27,8 @@ namespace UnitOfWork.IoC
 
             services.AddEntityFrameworkSqlServer();
             services.AddDbContext<SecurityModelContext>(options => options.UseSqlServer(connectionString));
+
+            services.AddScoped<IUnitOfWork>(ctx => ctx.GetRequiredService<SecurityModelContext>());
 
             //Evita tenerque utilizar el ThenInclude ya que devuelve todas las relaciones.
             //services.AddDbContext<SecurityModelContext>(options => options.UseLazyLoadingProxies().UseSqlServer(connectionString));
