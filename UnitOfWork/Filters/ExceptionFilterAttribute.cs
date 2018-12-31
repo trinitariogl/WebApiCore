@@ -12,7 +12,7 @@ namespace UnitOfWork.Filters
     {
         public override void OnException(ExceptionContext context)
         {
-            if (context.Exception is NotFoundException)
+            /*if (context.Exception is NotFoundException)
             {
                 // handle explicit 'known' API errors
                 var ex = context.Exception as NotFoundException;
@@ -39,7 +39,7 @@ namespace UnitOfWork.Filters
             {
                 context.Result = new JsonResult(context.Exception.Message);
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            }
+            }*/
 
 
             base.OnException(context);

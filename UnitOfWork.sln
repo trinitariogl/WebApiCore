@@ -27,9 +27,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServiceInterface
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApplicationServiceLayer", "ApplicationServiceLayer\ApplicationServiceLayer.csproj", "{92D89FB9-CC99-467E-8332-09E77B64289D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Utils", "CrossCutting.Utils\CrossCutting.Utils.csproj", "{DF6F4540-9C44-40A9-BE57-1B5D42A59E46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utils", "CrossCutting.Utils\CrossCutting.Utils.csproj", "{DF6F4540-9C44-40A9-BE57-1B5D42A59E46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Ioc", "CrossCutting.Ioc\CrossCutting.Ioc.csproj", "{A8EDC8A2-C00F-4741-8C6B-AD68B25871D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Ioc", "CrossCutting.Ioc\CrossCutting.Ioc.csproj", "{A8EDC8A2-C00F-4741-8C6B-AD68B25871D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Core", "CrossCutting.Core\CrossCutting.Core.csproj", "{A8042506-839D-4679-AD5D-04A0FD1228BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{A8EDC8A2-C00F-4741-8C6B-AD68B25871D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8EDC8A2-C00F-4741-8C6B-AD68B25871D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8EDC8A2-C00F-4741-8C6B-AD68B25871D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8042506-839D-4679-AD5D-04A0FD1228BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8042506-839D-4679-AD5D-04A0FD1228BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8042506-839D-4679-AD5D-04A0FD1228BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8042506-839D-4679-AD5D-04A0FD1228BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +94,7 @@ Global
 		{92D89FB9-CC99-467E-8332-09E77B64289D} = {588D2903-0290-4DED-B1C9-883F5EF1E80F}
 		{DF6F4540-9C44-40A9-BE57-1B5D42A59E46} = {D2F15CDE-A4C3-47E4-BB10-8BB7587D6B90}
 		{A8EDC8A2-C00F-4741-8C6B-AD68B25871D1} = {D2F15CDE-A4C3-47E4-BB10-8BB7587D6B90}
+		{A8042506-839D-4679-AD5D-04A0FD1228BE} = {D2F15CDE-A4C3-47E4-BB10-8BB7587D6B90}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {667C6AD0-25ED-460E-8EA0-BFE16838A396}

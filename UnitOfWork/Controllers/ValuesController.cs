@@ -15,9 +15,9 @@ namespace UnitOfWork.Controllers
     public class ValuesController : Controller
     {
         private IUserAccountApplicationService _userAccountApplicationService;
-        private readonly ILoggerFactory _logger;
+        private readonly ILogger<ValuesController> _logger;
 
-        public ValuesController(IUserAccountApplicationService userAccountApplicationService, ILoggerFactory logger)
+        public ValuesController(IUserAccountApplicationService userAccountApplicationService, ILogger<ValuesController> logger)
         {
             this._userAccountApplicationService = userAccountApplicationService;
             _logger = logger;
@@ -31,8 +31,7 @@ namespace UnitOfWork.Controllers
 
             UserAccountDto userAccountDto = new UserAccountDto();
 
-            var logger = _logger.CreateLogger("LoggerCategory");
-            logger.LogInformation("Calling the ping action");
+            _logger.LogInformation("Log Information");
 
             userAccountDto.Username = "TNT44";
             userAccountDto.Id = Guid.NewGuid().ToString();

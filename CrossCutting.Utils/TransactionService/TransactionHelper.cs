@@ -13,15 +13,12 @@ namespace CrossCutting.Utils.TransactionService
     {
         private IUnitOfWork _uow;
         private ITransaction _tx;
-        private ILogger logger;
+        private ILogger<TransactionHelper> _logger;
 
-        private readonly ILoggerFactory _log;
-
-        public TransactionHelper(IUnitOfWork uow, ILoggerFactory log)
+        public TransactionHelper(IUnitOfWork uow, ILogger<TransactionHelper> logger)
         {
             _uow = uow;
-            _log = log;
-            logger = _log.CreateLogger("LoggerCategory");
+            _logger = logger;
         }
 
         private bool TransactionHandled { get; set; }
@@ -29,7 +26,7 @@ namespace CrossCutting.Utils.TransactionService
 
         public void BeginTransaction()
         {
-            logger.LogInformation("Entra en begin transaction");
+            _logger.LogInformation("Entra en begin transaction");
             _tx = _uow.BeginTransaction();
         }
         public void EndTransaction(ActionExecutedContext filterContext)
@@ -37,7 +34,7 @@ namespace CrossCutting.Utils.TransactionService
             if (_tx == null) throw new NotSupportedException();
             if (filterContext.Exception == null)
             {
-                logger.LogInformation("Entra en begin End Transaction");
+                _logger.LogInformation("Entra en begin End Transaction");
                 //_uow.SaveChangesAsync();
                 //_uow.SaveEntitiesAsync();
                 _tx.Commit();
@@ -46,7 +43,7 @@ namespace CrossCutting.Utils.TransactionService
             {
                 try
                 {
-                    logger.LogInformation("Entra en begin RollBack");
+                    _logger.LogInformation("Entra en begin RollBack");
                     _tx.Rollback();
                 }
                 catch (Exception ex)
