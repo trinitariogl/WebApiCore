@@ -31,7 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Utils", "Cross
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Ioc", "CrossCutting.Ioc\CrossCutting.Ioc.csproj", "{A8EDC8A2-C00F-4741-8C6B-AD68B25871D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Core", "CrossCutting.Core\CrossCutting.Core.csproj", "{A8042506-839D-4679-AD5D-04A0FD1228BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrossCutting.Core", "CrossCutting.Core\CrossCutting.Core.csproj", "{A8042506-839D-4679-AD5D-04A0FD1228BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApiTest", "WebApiTest\WebApiTest.csproj", "{55BDF106-A7BE-4183-BF27-38112583B1EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,10 @@ Global
 		{A8042506-839D-4679-AD5D-04A0FD1228BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8042506-839D-4679-AD5D-04A0FD1228BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8042506-839D-4679-AD5D-04A0FD1228BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55BDF106-A7BE-4183-BF27-38112583B1EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55BDF106-A7BE-4183-BF27-38112583B1EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55BDF106-A7BE-4183-BF27-38112583B1EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55BDF106-A7BE-4183-BF27-38112583B1EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
