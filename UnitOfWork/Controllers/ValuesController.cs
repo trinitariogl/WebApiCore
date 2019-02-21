@@ -97,6 +97,54 @@ namespace UnitOfWork.Controllers
             return "value";
         }
 
+        /// <summary>
+        /// Create User
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Status Code Http</returns>
+        public async Task<IActionResult> CreateUser(LogOnDto model)
+        {
+            if(ModelState.IsValid)
+            {
+                UserAccountDto userDto = MappingUser(model);
+
+                await this._userAccountApplicationService.CreateUser(userDto);
+            }
+            else
+            {
+                //El CrateUser nos devolvería un SecurityResult.
+                //AddErrors(result);
+                return StatusCode(422);
+            }
+
+            return Ok();
+
+        }
+
+        private void AddErrors(SecurityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+        }
+
+        private static UserAccountDto MappingUser(LogOnDto model)
+        {
+            UserAccountDto userDto = new UserAccountDto();
+
+            userDto.Username = model.Username;
+            userDto.Id = model.Username;
+            //userDto.Email = model.Email;
+            //userDto.PrefferedLanguage = model.Language;
+            var salt = Crypto.CreateSalt(8);
+            userDto.Salt = salt;
+            userDto.PasswordHash = Crypto.GetSHA256Hash(model.Password.ToString(), salt);
+            userDto.Active = false;
+            userDto.VerificationToken = Guid.NewGuid();
+            return userDto;
+        }
+
         // GET api/values/5
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin")]
