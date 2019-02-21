@@ -3,6 +3,7 @@
 namespace ApplicationServiceInterfaces.Services
 {
     using ApplicationServiceInterfaces.Models;
+    using System.IdentityModel.Tokens.Jwt;
     using System.Threading.Tasks;
 
     public interface IUserAccountApplicationService
@@ -14,5 +15,7 @@ namespace ApplicationServiceInterfaces.Services
         Task<UserAccountDto> FindUserByEmail(string email);
 
         Task<UserAccountDto> CreateUser(UserAccountDto newUser);
+
+        Task<JwtSecurityToken> Authenticate(LogOnDto userLogon);
     }
 }

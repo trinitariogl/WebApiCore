@@ -42,5 +42,7 @@ namespace ApplicationServiceInterfaces.Models
         /*[Required]
         [Display(Name = "VerificationToken", ResourceType = typeof(Translations))]*/
         public Nullable<System.Guid> VerificationToken { get; set; }
+
+        public ICollection<RoleDto> UserRoles { get; set; }
     }
 }

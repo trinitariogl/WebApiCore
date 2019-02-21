@@ -3,6 +3,7 @@ namespace UnitOfWork
 {
     using CrossCutting.Ioc;
     using DataServiceLayer.Context;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,8 @@ namespace UnitOfWork
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Console;
+    using Microsoft.IdentityModel.Tokens;
+    using System.Text;
     using UnitOfWork.Filters;
     using UnitOfWork.IoC;
 
@@ -45,10 +48,25 @@ namespace UnitOfWork
 
             ContainerSetup.Setup(services, Configuration);
             LogSecurityModule.Setup(services, Configuration);
-            services.AddScoped<UnitOfWorkFilterAttribute>();
 
-            //var connection = @"Server=(localdb)\mssqllocaldb;Database=LogSecurity;Trusted_Connection=True;ConnectRetryCount=0";
-            //services.AddDbContext<SecurityModelContext>(options => options.UseSqlServer(connection));
+            services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(jwtBearerOptions =>
+            {
+                jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateActor = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["ApiAuth:Issuer"],
+                    ValidAudience = Configuration["ApiAuth:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["ApiAuth:SecretKey"]))
+                };
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +77,7 @@ namespace UnitOfWork
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

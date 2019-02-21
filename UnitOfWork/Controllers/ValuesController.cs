@@ -3,29 +3,80 @@ namespace UnitOfWork.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
+    using System.Text;
     using System.Threading.Tasks;
     using ApplicationServiceInterfaces.Models;
     using ApplicationServiceInterfaces.Services;
     using CrossCutting.Utils.CryptoService;
+    using Microsoft.AspNetCore.Authentication;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Microsoft.IdentityModel.Tokens;
+    using Newtonsoft.Json;
 
     //[ServiceFilter(typeof(UnitOfWorkFilterAttribute))]
     [Route("api/[controller]")]
+    [Authorize]
     public class ValuesController : Controller
     {
         private IUserAccountApplicationService _userAccountApplicationService;
         private readonly ILogger<ValuesController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public ValuesController(IUserAccountApplicationService userAccountApplicationService, ILogger<ValuesController> logger)
+        public ValuesController(IConfiguration configuration, IUserAccountApplicationService userAccountApplicationService, ILogger<ValuesController> logger)
         {
             this._userAccountApplicationService = userAccountApplicationService;
-            _logger = logger;
+            this._logger = logger;
+            this._configuration = configuration;
+        }
+
+        /// <summary>
+        /// LogIn User
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Token</returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> LogIn(LogOnDto model)
+        {
+            JwtSecurityToken token = null;
+
+            if (ModelState.IsValid)
+            {
+                token = await _userAccountApplicationService.Authenticate(model);
+
+                if (User.IsInRole("Administrator") || User.IsInRole("Readers") || User.IsInRole("CallCenter"))
+                {
+                    return RedirectToAction("Index");
+                }
+                
+                if (User.IsInRole("Public"))
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Error");
+            }
+
+            return Ok(
+                new
+                {
+                    response = new JwtSecurityTokenHandler().WriteToken(token)
+                }
+            );
+
         }
 
         // GET api/values
         [HttpGet]
-        public async Task<IEnumerable<string>> Get()
+        [AllowAnonymous]
+        public async Task<string> Get()
         {
             UserAccountDto user = await this._userAccountApplicationService.FindUserById("1ea57e74-6984-4d98-86b3-c516c464b356");
 
@@ -43,15 +94,23 @@ namespace UnitOfWork.Controllers
             userAccountDto.Active = false;
             userAccountDto.VerificationToken = Guid.NewGuid();
 
-            UserAccountDto userAccountNew = await _userAccountApplicationService.CreateUser(userAccountDto);
-
-            return new string[] { "value1", "value2" };
+            return "value";
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public string Get(int id)
         {
+            return "value";
+        }
+
+        [HttpGet("/user/{id}")]
+        [Authorize(Roles = "User")]
+        public string GetUser(int id)
+        {
+            IEnumerable<Claim> claims = User.Claims;
+
             return "value";
         }
 

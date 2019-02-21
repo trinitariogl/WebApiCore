@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 namespace CrossCutting.Utils.CryptoService
 {
+    using System;
     using System.Security.Cryptography;
     using System.Text;
 
@@ -26,6 +25,20 @@ namespace CrossCutting.Utils.CryptoService
                 provider.GetBytes(data);
                 return Convert.ToBase64String(data);
             }
+        }
+
+        /// <summary>
+        /// Gets the hashed password.
+        /// </summary>
+        /// <param name="userid">The userid.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>
+        /// A string with hashed password.
+        /// </returns>
+        /// <exception cref="System.InvalidOperationException">thrown when there's more than a user with same id satisfied by.</exception>
+        public static byte[] GetHashedPassword(byte[] salt, string password)
+        {
+            return GetSHA256Hash(password, salt);
         }
 
         /* [Obsolete("Use SHA256 algoritm instead")]
