@@ -5,18 +5,14 @@ namespace UnitOfWork.Controllers
     using System.Collections.Generic;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
-    using System.Text;
     using System.Threading.Tasks;
     using ApplicationServiceInterfaces.Models;
     using ApplicationServiceInterfaces.Services;
     using CrossCutting.Utils.CryptoService;
-    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
-    using Microsoft.IdentityModel.Tokens;
-    using Newtonsoft.Json;
 
     //[ServiceFilter(typeof(UnitOfWorkFilterAttribute))]
     [Route("api/[controller]")]
@@ -102,7 +98,8 @@ namespace UnitOfWork.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Status Code Http</returns>
-        public async Task<IActionResult> CreateUser(LogOnDto model)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateUser(RegisterDto model)
         {
             if(ModelState.IsValid)
             {
@@ -112,37 +109,13 @@ namespace UnitOfWork.Controllers
             }
             else
             {
-                //El CrateUser nos devolvería un SecurityResult.
+                //El CrateUser nos devolvería un SecurityResult, para el caso de una web con mvc
                 //AddErrors(result);
                 return StatusCode(422);
             }
 
             return Ok();
 
-        }
-
-        private void AddErrors(SecurityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error);
-            }
-        }
-
-        private static UserAccountDto MappingUser(LogOnDto model)
-        {
-            UserAccountDto userDto = new UserAccountDto();
-
-            userDto.Username = model.Username;
-            userDto.Id = model.Username;
-            //userDto.Email = model.Email;
-            //userDto.PrefferedLanguage = model.Language;
-            var salt = Crypto.CreateSalt(8);
-            userDto.Salt = salt;
-            userDto.PasswordHash = Crypto.GetSHA256Hash(model.Password.ToString(), salt);
-            userDto.Active = false;
-            userDto.VerificationToken = Guid.NewGuid();
-            return userDto;
         }
 
         // GET api/values/5
@@ -179,5 +152,35 @@ namespace UnitOfWork.Controllers
         public void Delete(int id)
         {
         }
+
+
+        #region Private Methods
+
+        //Método utilizado en Web para añadir los errores producidos al modelo
+        private void AddErrors(SecurityResult result)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error);
+            }
+        }
+
+        //Mapeo de la entidad user
+        private static UserAccountDto MappingUser(RegisterDto model)
+        {
+            UserAccountDto userDto = new UserAccountDto();
+            userDto.Id = Guid.NewGuid().ToString();
+            userDto.Username = model.Username;
+            userDto.Email = model.Email;
+            var salt = Crypto.CreateSalt(8);
+            userDto.Salt = salt;
+            userDto.PasswordHash = Crypto.GetSHA256Hash(userDto.Id, salt);
+            userDto.Active = false;
+            userDto.VerificationToken = Guid.NewGuid();
+
+            return userDto;
+        }
+
+        #endregion
     }
 }
