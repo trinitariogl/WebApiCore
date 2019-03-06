@@ -17,5 +17,7 @@ namespace ApplicationServiceInterfaces.Services
         Task<UserAccountDto> CreateUser(UserAccountDto newUser);
 
         Task<JwtSecurityToken> Authenticate(LogOnDto userLogon);
+
+        Task<UserAccountDto> UpdateUser(UserAccountDto updateUser);
     }
 }

@@ -32,7 +32,15 @@ namespace ApplicationServiceLayer.Services
 
         public async Task<UserAccountDto> FindUserByUsername(string username)
         {
-            UserAccounts userAccount = await this.userAccountDataService.GetAsync(x => x.Username == username);
+            //UserAccounts userAccount = await this.userAccountDataService.GetAsync(x => x.Username == username);
+
+            UserAccounts userAccount = await this.userAccountDataService.GetAsync(x => x.Username == username, x => x.UserRoles);
+
+            UserAccounts userAccount2 = await this.userAccountDataService.GetAsync(null,
+                                                                            predicate: b => b.Username == username,
+                                                                            pathInclude: source =>
+                                                                                         source.Include(a => a.UserRoles)
+                                                                                               .ThenInclude(a => a.Rol));
 
             return userAccountConverter.MapUserAccountDto(userAccount);
         }
@@ -69,6 +77,19 @@ namespace ApplicationServiceLayer.Services
             return userAccountConverter.MapUserAccountDto(user);
         }
 
+        public async Task<UserAccountDto> UpdateUser(UserAccountDto updateUser)
+        {
+            updateUser = MappingUserUpdate(updateUser);
+
+            UserAccounts user = userAccountConverter.MapUserAccount(updateUser);
+
+            user = this.userAccountDataService.Update(user);
+
+            var commited = await userAccountDataService.UnitOfWork.SaveEntitiesAsync();
+
+            return userAccountConverter.MapUserAccountDto(user);
+        }
+
         /// <summary>
         /// Authenticate user
         /// </summary>
@@ -76,7 +97,7 @@ namespace ApplicationServiceLayer.Services
         /// <returns>Token</returns>
         public async Task<JwtSecurityToken> Authenticate(LogOnDto userLogOn)
         {
-            UserAccountDto user = await this.FindUserById("1ea57e74-6984-4d98-86b3-c516c464b356");
+            UserAccountDto user = await this.FindUserByUsername(userLogOn.Username);
 
             if (user == null)
             {
@@ -130,6 +151,23 @@ namespace ApplicationServiceLayer.Services
             );
 
             return token;
+        }
+
+        //Mapeo de la entidad user
+        //Añadir el id en la creación de la entidad.
+        private static UserAccountDto MappingUserUpdate(UserAccountDto model)
+        {
+            UserAccountDto userDto = new UserAccountDto();
+            //userDto.Id = Guid.NewGuid().ToString();
+            userDto.Username = model.Username;
+            userDto.Email = model.Email;
+            var salt = Crypto.CreateSalt(8);
+            userDto.Salt = salt;
+            userDto.PasswordHash = Crypto.GetSHA256Hash(model.Password, salt);
+            userDto.Active = false;
+            userDto.VerificationToken = Guid.NewGuid();
+
+            return userDto;
         }
     }
 }

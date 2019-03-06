@@ -20,6 +20,8 @@ namespace ApplicationServiceInterfaces.Models
         //[Display(Name = "Email", ResourceType = typeof(Translations))]
         public string Email { get; set; }
 
+        public string Password { get; set; }
+
         /// <summary>
         /// Gets or sets the password.
         /// </summary>

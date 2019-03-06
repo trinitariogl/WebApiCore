@@ -22,6 +22,8 @@ namespace ApplicationServiceInterfaces.Models
         [Display(Name = "Email", ResourceType = typeof(Translations))]*/
         public string Email { get; set; }
 
+        public string Password { get; set; }
+
         /*[Required]
         [StringLength(8, ErrorMessageResourceName = "CannotExceed", ErrorMessageResourceType = typeof(Translations))]
         [Display(Name = "PrefferedLanguage", ResourceType = typeof(Translations))]*/

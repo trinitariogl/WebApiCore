@@ -69,30 +69,6 @@ namespace UnitOfWork.Controllers
 
         }
 
-        // GET api/values
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<string> Get()
-        {
-            UserAccountDto user = await this._userAccountApplicationService.FindUserById("1ea57e74-6984-4d98-86b3-c516c464b356");
-
-            UserAccountDto userAccountDto = new UserAccountDto();
-
-            _logger.LogInformation("Log Information");
-
-            userAccountDto.Username = "TNT44";
-            userAccountDto.Id = Guid.NewGuid().ToString();
-            userAccountDto.Email = "trinogl@hotmail.com";
-            userAccountDto.PrefferedLanguage = "es";
-            var salt = Crypto.CreateSalt(8);
-            userAccountDto.Salt = salt;
-            userAccountDto.PasswordHash = Crypto.GetSHA256Hash(Guid.NewGuid().ToString(), salt);
-            userAccountDto.Active = false;
-            userAccountDto.VerificationToken = Guid.NewGuid();
-
-            return "value";
-        }
-
         /// <summary>
         /// Create User
         /// </summary>
@@ -101,7 +77,9 @@ namespace UnitOfWork.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateUser(RegisterDto model)
         {
-            if(ModelState.IsValid)
+            IEnumerable<Claim> claims = User.Claims;
+
+            if (ModelState.IsValid)
             {
                 UserAccountDto userDto = MappingUser(model);
 
@@ -117,23 +95,7 @@ namespace UnitOfWork.Controllers
             return Ok();
 
         }
-
-        // GET api/values/5
-        [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        [HttpGet("/user/{id}")]
-        [Authorize(Roles = "User")]
-        public string GetUser(int id)
-        {
-            IEnumerable<Claim> claims = User.Claims;
-
-            return "value";
-        }
+    
 
         // POST api/values
         [HttpPost]
@@ -143,8 +105,18 @@ namespace UnitOfWork.Controllers
 
         // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public async Task<IActionResult> UpdateUser([FromBody]UserAccountDto model)
         {
+            if(ModelState.IsValid)
+            {
+                await this._userAccountApplicationService.UpdateUser(model);
+            }
+            else
+            {
+                return StatusCode(422);
+            }
+
+            return Ok();
         }
 
         // DELETE api/values/5
@@ -174,7 +146,7 @@ namespace UnitOfWork.Controllers
             userDto.Email = model.Email;
             var salt = Crypto.CreateSalt(8);
             userDto.Salt = salt;
-            userDto.PasswordHash = Crypto.GetSHA256Hash(userDto.Id, salt);
+            userDto.PasswordHash = Crypto.GetSHA256Hash(model.Password, salt);
             userDto.Active = false;
             userDto.VerificationToken = Guid.NewGuid();
 
