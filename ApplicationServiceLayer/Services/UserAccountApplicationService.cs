@@ -90,6 +90,21 @@ namespace ApplicationServiceLayer.Services
             return userAccountConverter.MapUserAccountDto(user);
         }
 
+        public async Task<bool> DeleteUser(string id)
+        {
+            UserAccounts user = await this.userAccountDataService.GetByIdAsync(Guid.Parse(id));
+
+            if(user == null)
+            {
+                throw new Exception();
+            }
+
+            this.userAccountDataService.Remove(Guid.Parse(id));
+
+            return true;
+
+        }
+
         /// <summary>
         /// Authenticate user
         /// </summary>

@@ -97,13 +97,11 @@ namespace UnitOfWork.Controllers
         }
     
 
-        // POST api/values
         [HttpPost]
         public void Post([FromBody]string value)
         {
         }
 
-        // PUT api/values/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser([FromBody]UserAccountDto model)
         {
@@ -121,8 +119,11 @@ namespace UnitOfWork.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
+            await this._userAccountApplicationService.DeleteUser(id);
+
+            return Ok();
         }
 
 
