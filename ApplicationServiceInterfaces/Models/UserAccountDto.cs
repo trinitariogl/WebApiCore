@@ -10,7 +10,7 @@ namespace ApplicationServiceInterfaces.Models
         /*[Required]
         [StringLength(128, ErrorMessageResourceName = "CannotExceed", ErrorMessageResourceType = typeof(Translations))]
         [Display(Name = "Id", ResourceType = typeof(Translations))]*/
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         /*[Required]
         [StringLength(0, ErrorMessageResourceName = "CannotExceed", ErrorMessageResourceType = typeof(Translations))]

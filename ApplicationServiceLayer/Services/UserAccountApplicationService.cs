@@ -29,7 +29,6 @@ namespace ApplicationServiceLayer.Services
             this.userAccountConverter = _userAccountConverter;
         }
 
-
         public async Task<UserAccountDto> FindUserByUsername(string username)
         {
             //UserAccounts userAccount = await this.userAccountDataService.GetAsync(x => x.Username == username);
@@ -66,9 +65,9 @@ namespace ApplicationServiceLayer.Services
             return userAccountConverter.MapUserAccountDto(userAccount);
         }
 
-        public async Task<UserAccountDto> CreateUser(UserAccountDto newUser)
+        public async Task<UserAccountDto> CreateUser(RegisterDto newUser)
         {
-            UserAccounts user = userAccountConverter.MapUserAccount(newUser);
+            UserAccounts user = userAccountConverter.MapUserAccount(MappingUserCreate(newUser));
 
             user = this.userAccountDataService.Insert(user);
 
@@ -129,6 +128,9 @@ namespace ApplicationServiceLayer.Services
             return GenerateToken(user);
         }
 
+
+        #region Methods Private
+
         /// <summary>
         /// Generate Token
         /// </summary>
@@ -145,7 +147,7 @@ namespace ApplicationServiceLayer.Services
             var claims = new[]
             {
                 new Claim("UserData", JsonConvert.SerializeObject(user)),
-                new Claim("id", user.Id),
+                new Claim("id", user.Id.ToString()),
                 new Claim("email", user.Email),
                 new Claim("name", user.Username),
                 new Claim(ClaimTypes.Role, "Administrator")
@@ -173,7 +175,6 @@ namespace ApplicationServiceLayer.Services
         private static UserAccountDto MappingUserUpdate(UserAccountDto model)
         {
             UserAccountDto userDto = new UserAccountDto();
-            //userDto.Id = Guid.NewGuid().ToString();
             userDto.Username = model.Username;
             userDto.Email = model.Email;
             var salt = Crypto.CreateSalt(8);
@@ -184,5 +185,21 @@ namespace ApplicationServiceLayer.Services
 
             return userDto;
         }
+
+        private static UserAccountDto MappingUserCreate(RegisterDto model)
+        {
+            UserAccountDto userDto = new UserAccountDto();
+            userDto.Username = model.Username;
+            userDto.Email = model.Email;
+            var salt = Crypto.CreateSalt(8);
+            userDto.Salt = salt;
+            userDto.PasswordHash = Crypto.GetSHA256Hash(model.Password, salt);
+            userDto.Active = false;
+            userDto.VerificationToken = Guid.NewGuid();
+
+            return userDto;
+        }
+
+        #endregion
     }
 }

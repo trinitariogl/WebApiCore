@@ -2,10 +2,11 @@
 
 namespace DataServiceInterfaces.Models
 {
+    using CrossCutting.Core;
     using System;
     using System.Collections.Generic;
 
-    public partial class UserAccounts
+    public partial class UserAccounts : Entity
     {
         public UserAccounts()
         {
@@ -22,5 +23,7 @@ namespace DataServiceInterfaces.Models
         public Nullable<Guid> VerificationToken { get; set; }
 
         public virtual ICollection<UserRoles> UserRoles { get; set; }
+
+        public override bool IsValid => true;
     }
 }

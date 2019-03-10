@@ -81,9 +81,7 @@ namespace UnitOfWork.Controllers
 
             if (ModelState.IsValid)
             {
-                UserAccountDto userDto = MappingUser(model);
-
-                await this._userAccountApplicationService.CreateUser(userDto);
+                await this._userAccountApplicationService.CreateUser(model);
             }
             else
             {
@@ -136,22 +134,6 @@ namespace UnitOfWork.Controllers
             {
                 ModelState.AddModelError("", error);
             }
-        }
-
-        //Mapeo de la entidad user
-        private static UserAccountDto MappingUser(RegisterDto model)
-        {
-            UserAccountDto userDto = new UserAccountDto();
-            userDto.Id = Guid.NewGuid().ToString();
-            userDto.Username = model.Username;
-            userDto.Email = model.Email;
-            var salt = Crypto.CreateSalt(8);
-            userDto.Salt = salt;
-            userDto.PasswordHash = Crypto.GetSHA256Hash(model.Password, salt);
-            userDto.Active = false;
-            userDto.VerificationToken = Guid.NewGuid();
-
-            return userDto;
         }
 
         #endregion

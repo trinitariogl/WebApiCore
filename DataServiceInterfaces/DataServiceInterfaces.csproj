@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CrossCutting.Core\CrossCutting.Core.csproj" />
     <ProjectReference Include="..\GenericRepository\GenericRepository.csproj" />
   </ItemGroup>
 

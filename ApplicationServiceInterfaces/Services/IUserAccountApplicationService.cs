@@ -14,7 +14,7 @@ namespace ApplicationServiceInterfaces.Services
 
         Task<UserAccountDto> FindUserByEmail(string email);
 
-        Task<UserAccountDto> CreateUser(UserAccountDto newUser);
+        Task<UserAccountDto> CreateUser(RegisterDto newUser);
 
         Task<JwtSecurityToken> Authenticate(LogOnDto userLogon);
 
