@@ -4,6 +4,7 @@ namespace UnitOfWork
     using CrossCutting.Ioc;
     using DataServiceLayer.Context;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace UnitOfWork
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Logging.Console;
     using Microsoft.IdentityModel.Tokens;
+    using Newtonsoft.Json;
     using System.Text;
     using UnitOfWork.Filters;
     using UnitOfWork.IoC;
@@ -39,12 +41,13 @@ namespace UnitOfWork
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(
-                config => {
-                    config.Filters.Add<UnitOfWorkFilterAttribute>();
-                    config.Filters.Add<ExceptionFilter>();
-                }
-            );
+            services.AddMvc(config => {
+                        config.Filters.Add<UnitOfWorkFilterAttribute>();
+                        config.Filters.Add<ExceptionFilter>();})
+                    .AddJsonOptions(o =>
+                    {
+                        o.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Local;
+                    });
 
             ContainerSetup.Setup(services, Configuration);
             LogSecurityModule.Setup(services, Configuration);
@@ -65,6 +68,13 @@ namespace UnitOfWork
                     ValidAudience = Configuration["ApiAuth:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["ApiAuth:SecretKey"]))
                 };
+            });
+
+            services.AddAuthorization(auth =>
+            {
+                auth.AddPolicy(JwtBearerDefaults.AuthenticationScheme, new AuthorizationPolicyBuilder()
+                    .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser().Build());
             });
 
         }
