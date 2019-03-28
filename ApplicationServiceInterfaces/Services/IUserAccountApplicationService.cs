@@ -3,6 +3,7 @@
 namespace ApplicationServiceInterfaces.Services
 {
     using ApplicationServiceInterfaces.Models;
+    using System;
     using System.IdentityModel.Tokens.Jwt;
     using System.Threading.Tasks;
 
@@ -10,7 +11,7 @@ namespace ApplicationServiceInterfaces.Services
     {
         Task<UserAccountDto> FindUserByUsername(string username);
 
-        Task<UserAccountDto> FindUserById(string id);
+        Task<UserAccountDto> FindUserById(Guid id);
 
         Task<UserAccountDto> FindUserByEmail(string email);
 

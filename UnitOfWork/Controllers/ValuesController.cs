@@ -17,7 +17,7 @@ namespace UnitOfWork.Controllers
     //[ServiceFilter(typeof(UnitOfWorkFilterAttribute))]
     [Route("api/[controller]")]
     [Authorize]
-    public class ValuesController : Controller
+    public class ValuesController : ControllerBase
     {
         private IUserAccountApplicationService _userAccountApplicationService;
         private readonly ILogger<ValuesController> _logger;
@@ -35,12 +35,12 @@ namespace UnitOfWork.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Token</returns>
-        [HttpPost]
+        [HttpPost("LogIn")]
         [AllowAnonymous]
         public async Task<IActionResult> LogIn(LogOnDto model)
         {
             JwtSecurityToken token = null;
-
+            _logger.LogInformation("Mensae");
             if (ModelState.IsValid)
             {
                 token = await _userAccountApplicationService.Authenticate(model);
@@ -116,10 +116,21 @@ namespace UnitOfWork.Controllers
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> Delete(string id)
         {
             await this._userAccountApplicationService.DeleteUser(id);
+
+            return Ok();
+        }
+
+        // DELETE api/values/Get/5
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string id)
+        {
+            //await this._userAccountApplicationService.DeleteUser(id);
 
             return Ok();
         }

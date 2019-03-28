@@ -44,7 +44,7 @@ namespace ApplicationServiceLayer.Services
             return userAccountConverter.MapUserAccountDto(userAccount);
         }
 
-        public async Task<UserAccountDto> FindUserById(string id)
+        public async Task<UserAccountDto> FindUserById(Guid id)
         {
             UserAccounts userAccount = await this.userAccountDataService.GetAsync(x => x.Id == id, x => x.UserRoles);
 
