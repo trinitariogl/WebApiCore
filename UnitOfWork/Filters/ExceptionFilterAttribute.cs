@@ -5,11 +5,20 @@ namespace UnitOfWork.Filters
     using CrossCutting.Utils.ExceptionService;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
+    using Microsoft.Extensions.Logging;
     using System;
     using System.Net;
+    using System.Text;
 
     public class ExceptionFilter : ExceptionFilterAttribute
     {
+        private readonly ILogger _logger;
+
+        public ExceptionFilter(ILogger<ExceptionFilter> logger)
+        {
+            _logger = logger;
+        }
+
         public override void OnException(ExceptionContext context)
         {
             if (context.Exception is NotFoundException)
@@ -20,6 +29,8 @@ namespace UnitOfWork.Filters
 
                 context.Result = new JsonResult(ex.Message);
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+
+                _logger.LogError("Not Found", context);
             }
             else if (context.Exception is BadRequestException)
             {
@@ -29,20 +40,48 @@ namespace UnitOfWork.Filters
 
                 context.Result = new JsonResult(ex.Message);
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+
+                _logger.LogError("Bad Request", context);
             }
             else if (context.Exception is UnauthorizedAccessException)
             {
                 context.Result = new JsonResult(context.Exception.Message);
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+
+                _logger.LogError("Unauthorized", context);
             }
             else if (context.Exception is ForbiddenException)
             {
                 context.Result = new JsonResult(context.Exception.Message);
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+
+                _logger.LogError("Forbidden", context);
+            }
+            else
+            {
+                context.Result = new JsonResult(context.Exception.Message);
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                _logger.LogError(CreateMessageError(context));
             }
 
-
             base.OnException(context);
+        }
+
+        private static string CreateMessageError(ExceptionContext context)
+        {
+            StringBuilder message = new StringBuilder();
+
+            message.Append(Environment.NewLine);
+            message.Append("URL: " + context.HttpContext.Request.Path.ToString() + Environment.NewLine);
+            message.Append("Controller: " + context.ActionDescriptor.RouteValues["controller"] + Environment.NewLine);
+            message.Append("Action: " + context.ActionDescriptor.RouteValues["action"] + Environment.NewLine);
+            message.Append("Request: " + context.HttpContext.Request.QueryString + Environment.NewLine);
+            message.Append("Error Message: " + context.Exception.Message + Environment.NewLine);
+            message.Append("InnerException: " + context.Exception.InnerException + Environment.NewLine);
+            message.Append("StackTrace: " + context.Exception.StackTrace + Environment.NewLine);
+
+            return message.ToString();
         }
     }
 }

@@ -39,8 +39,9 @@ namespace UnitOfWork.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> LogIn(LogOnDto model)
         {
+            //[FromBody]
             JwtSecurityToken token = null;
-            _logger.LogInformation("Mensae");
+
             if (ModelState.IsValid)
             {
                 token = await _userAccountApplicationService.Authenticate(model);
