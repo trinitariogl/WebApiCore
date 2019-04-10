@@ -196,6 +196,7 @@ namespace ApplicationServiceLayer.Services
             userDto.PasswordHash = Crypto.GetSHA256Hash(model.Password, salt);
             userDto.Active = false;
             userDto.VerificationToken = Guid.NewGuid();
+            userDto.PrefferedLanguage = "es";
 
             return userDto;
         }

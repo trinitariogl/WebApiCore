@@ -1,14 +1,12 @@
 ﻿
 namespace UnitOfWork.Controllers
 {
-    using System;
     using System.Collections.Generic;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Threading.Tasks;
     using ApplicationServiceInterfaces.Models;
     using ApplicationServiceInterfaces.Services;
-    using CrossCutting.Utils.CryptoService;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
@@ -37,9 +35,8 @@ namespace UnitOfWork.Controllers
         /// <returns>Token</returns>
         [HttpPost("LogIn")]
         [AllowAnonymous]
-        public async Task<IActionResult> LogIn(LogOnDto model)
+        public async Task<IActionResult> LogIn([FromBody]LogOnDto model)
         {
-            //[FromBody]
             JwtSecurityToken token = null;
 
             if (ModelState.IsValid)
@@ -75,11 +72,10 @@ namespace UnitOfWork.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Status Code Http</returns>
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateUser(RegisterDto model)
+        [HttpPost("CreateUser")]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateUser([FromBody]RegisterDto model)
         {
-            IEnumerable<Claim> claims = User.Claims;
-
             if (ModelState.IsValid)
             {
                 await this._userAccountApplicationService.CreateUser(model);
@@ -95,16 +91,18 @@ namespace UnitOfWork.Controllers
 
         }
     
-
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
+        /// <summary>
+        /// Update User
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Estatus code Http</returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateUser([FromBody]UserAccountDto model)
         {
-            if(ModelState.IsValid)
+            IEnumerable<Claim> claims = User.Claims;
+
+            if (ModelState.IsValid)
             {
                 await this._userAccountApplicationService.UpdateUser(model);
             }
@@ -116,26 +114,19 @@ namespace UnitOfWork.Controllers
             return Ok();
         }
 
-        // DELETE api/values/5
+        /// <summary>
+        /// Delete User
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Status code Http</returns>
         [HttpDelete("Delete/{id}")]
-        [AllowAnonymous]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             await this._userAccountApplicationService.DeleteUser(id);
 
             return Ok();
         }
-
-        // DELETE api/values/Get/5
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> Index(string id)
-        {
-            //await this._userAccountApplicationService.DeleteUser(id);
-
-            return Ok();
-        }
-
 
         #region Private Methods
 
