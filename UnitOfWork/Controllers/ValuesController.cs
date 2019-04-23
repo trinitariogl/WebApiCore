@@ -33,7 +33,7 @@ namespace UnitOfWork.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Token</returns>
-        [HttpPost("LogIn")]
+        [HttpGet("LogIn")]
         [AllowAnonymous]
         public async Task<IActionResult> LogIn([FromBody]LogOnDto model)
         {
