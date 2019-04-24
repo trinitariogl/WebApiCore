@@ -164,6 +164,11 @@ namespace GenericRepository.Repository
             return result;
         }
 
+        public T GetById(Guid Id)
+        {
+            return Set.Find(Id);
+        }
+
         public async Task<T> GetByIdAsync(Guid Id)
         {
             return await Set.FindAsync(Id);

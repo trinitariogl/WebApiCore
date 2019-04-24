@@ -11,6 +11,9 @@ namespace UnitOfWork.Controllers
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using System.Linq;
+    using Newtonsoft.Json.Linq;
+    using System;
 
     //[ServiceFilter(typeof(UnitOfWorkFilterAttribute))]
     [Route("api/[controller]")]
@@ -42,16 +45,6 @@ namespace UnitOfWork.Controllers
             if (ModelState.IsValid)
             {
                 token = await _userAccountApplicationService.Authenticate(model);
-
-                if (User.IsInRole("Administrator") || User.IsInRole("Readers") || User.IsInRole("CallCenter"))
-                {
-                    return RedirectToAction("Index");
-                }
-                
-                if (User.IsInRole("Public"))
-                {
-                    return RedirectToAction("Index");
-                }
             }
             else
             {
@@ -96,15 +89,17 @@ namespace UnitOfWork.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Estatus code Http</returns>
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        [HttpPut("UpdateUser")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> UpdateUser([FromBody]UserAccountDto model)
         {
             IEnumerable<Claim> claims = User.Claims;
+            JObject jObject = JObject.Parse(claims.FirstOrDefault().Value);
+            Guid id = (Guid)jObject.SelectToken("Id");
 
             if (ModelState.IsValid)
             {
-                await this._userAccountApplicationService.UpdateUser(model);
+                await this._userAccountApplicationService.UpdateUser(id, model);
             }
             else
             {
@@ -120,7 +115,7 @@ namespace UnitOfWork.Controllers
         /// <param name="id"></param>
         /// <returns>Status code Http</returns>
         [HttpDelete("Delete/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(string id)
         {
             await this._userAccountApplicationService.DeleteUser(id);

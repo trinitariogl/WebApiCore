@@ -77,11 +77,11 @@ namespace ApplicationServiceLayer.Services
             return userAccountConverter.MapUserAccountDto(user);
         }
 
-        public async Task<UserAccountDto> UpdateUser(UserAccountDto updateUser)
+        public async Task<UserAccountDto> UpdateUser(Guid id, UserAccountDto updateUser)
         {
-            updateUser = MappingUserUpdate(updateUser);
+            UserAccounts user = userAccountDataService.GetById(id);
 
-            UserAccounts user = userAccountConverter.MapUserAccount(updateUser);
+            user.Update(updateUser.Username, updateUser.Email, Crypto.GetSHA256Hash(updateUser.Password, user.Salt));
 
             user = this.userAccountDataService.Update(user);
 
@@ -161,8 +161,8 @@ namespace ApplicationServiceLayer.Services
             // Generamos el Token
             var token = new JwtSecurityToken
             (
-                issuer: config["ApiAuth:Issuer"],
-                audience: config["ApiAuth:Audience"],
+                issuer: config["Auth:Issuer"],
+                audience: config["Auth:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddDays(60),
                 notBefore: DateTime.UtcNow,
@@ -170,22 +170,6 @@ namespace ApplicationServiceLayer.Services
             );
 
             return token;
-        }
-
-        //Mapeo de la entidad user
-        //Añadir el id en la creación de la entidad.
-        private static UserAccountDto MappingUserUpdate(UserAccountDto model)
-        {
-            UserAccountDto userDto = new UserAccountDto();
-            userDto.Username = model.Username;
-            userDto.Email = model.Email;
-            var salt = Crypto.CreateSalt(8);
-            userDto.Salt = salt;
-            userDto.PasswordHash = Crypto.GetSHA256Hash(model.Password, salt);
-            userDto.Active = false;
-            userDto.VerificationToken = Guid.NewGuid();
-
-            return userDto;
         }
 
         private static UserAccountDto MappingUserCreate(RegisterDto model)

@@ -33,6 +33,8 @@ namespace GenericRepository.Repository
 
         T Get(Guid id);
 
+        T GetById(Guid Id);
+
         Task<T> GetByIdAsync(Guid Id);
 
         Task<IEnumerable<T>> GetManyAsync(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] pathInclude);

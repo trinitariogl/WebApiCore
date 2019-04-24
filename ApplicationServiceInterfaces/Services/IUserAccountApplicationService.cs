@@ -19,7 +19,7 @@ namespace ApplicationServiceInterfaces.Services
 
         Task<JwtSecurityToken> Authenticate(LogOnDto userLogon);
 
-        Task<UserAccountDto> UpdateUser(UserAccountDto updateUser);
+        Task<UserAccountDto> UpdateUser(Guid id, UserAccountDto updateUser);
 
         Task<bool> DeleteUser(string id);
     }

@@ -25,5 +25,17 @@ namespace DataServiceInterfaces.Models
         public virtual ICollection<UserRoles> UserRoles { get; set; }
 
         public override bool IsValid => true;
+
+        public void Update(string userName, string email, byte[] pass)
+        {
+            this.Username = userName;
+            this.Email = email;
+            this.PasswordHash = pass;
+        }
+
+        public void UpdatePassword(byte[] pass)
+        {
+            this.PasswordHash = pass;
+        }
     }
 }
