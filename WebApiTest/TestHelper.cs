@@ -2,6 +2,7 @@
 namespace WebApiTest
 {
     using Microsoft.Extensions.Configuration;
+    using System.IO;
 
     public static class TestHelper
     {
@@ -12,6 +13,7 @@ namespace WebApiTest
                 //.AddJsonFile("appsettings.json", optional: true)
                 //.AddUserSecrets("e3dfcccf-0cb3-423a-b302-e3e92e95c128")
                 .AddJsonFile("appsettings.json")
+                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables()
                 .Build();
         }

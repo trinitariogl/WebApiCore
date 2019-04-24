@@ -14,6 +14,7 @@ namespace UnitOfWork
     using Microsoft.Extensions.Logging.Console;
     using Microsoft.IdentityModel.Tokens;
     using Newtonsoft.Json;
+    using System.IO;
     using System.Text;
     using UnitOfWork.Filters;
     using UnitOfWork.IoC;
@@ -23,7 +24,7 @@ namespace UnitOfWork
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
-               .SetBasePath(env.ContentRootPath)
+               .SetBasePath(Directory.GetCurrentDirectory())
                .AddJsonFile("appsettings.json", true, true)
                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
                .AddEnvironmentVariables();
@@ -64,9 +65,9 @@ namespace UnitOfWork
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["ApiAuth:Issuer"],
-                    ValidAudience = Configuration["ApiAuth:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["ApiAuth:SecretKey"]))
+                    ValidIssuer = Configuration["Auth:Issuer"],
+                    ValidAudience = Configuration["Auth:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth:SecretKey"]))
                 };
             });
 

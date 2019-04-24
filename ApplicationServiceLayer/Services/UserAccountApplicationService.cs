@@ -17,6 +17,7 @@ namespace ApplicationServiceLayer.Services
     using Microsoft.Extensions.Configuration;
     using CrossCutting.Utils.CryptoService;
     using System.Linq;
+    using System.IO;
 
     public class UserAccountApplicationService: IUserAccountApplicationService
     {
@@ -139,10 +140,11 @@ namespace ApplicationServiceLayer.Services
         private static JwtSecurityToken GenerateToken(UserAccountDto user)
         {
             var config = new ConfigurationBuilder()
+                                        .SetBasePath(Directory.GetCurrentDirectory())
                                         .AddJsonFile("appsettings.json")
                                         .Build();
 
-            var secretKey = config["ApiAuth:SecretKey"];
+            var secretKey = config["Auth:SecretKey"];
 
             var claims = new[]
             {

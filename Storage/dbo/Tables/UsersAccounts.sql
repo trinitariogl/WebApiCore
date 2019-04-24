@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[UserAccounts] (
-    [Id]           VARCHAR (128) NOT NULL,
+    [Id]           UNIQUEIDENTIFIER NOT NULL,
     [Username]     NVARCHAR (MAX) NOT NULL,
 	[Email] VARCHAR(80) NOT NULL, 
 	[PrefferedLanguage] VARCHAR(8) NOT NULL, 
