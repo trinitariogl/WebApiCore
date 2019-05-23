@@ -101,6 +101,8 @@ namespace ApplicationServiceLayer.Services
 
             this.userAccountDataService.Remove(Guid.Parse(id));
 
+            await this.userAccountDataService.UnitOfWork.SaveEntitiesAsync();
+
             return true;
 
         }
